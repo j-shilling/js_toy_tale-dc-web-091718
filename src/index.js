@@ -5,14 +5,10 @@ const realForm = document.querySelector('.add-toy-form')
 const toyUrl = 'http://localhost:3000/toys'
 let addToy = false
 
-// YOUR CODE HERE
-
 addBtn.addEventListener('click', () => {
-  // hide & seek with the form
   addToy = !addToy
   if (addToy) {
     toyForm.style.display = 'block'
-    // submit listener here
     realForm.addEventListener('submit', createToy)
   } else {
     toyForm.style.display = 'none'
@@ -26,22 +22,15 @@ document.body.addEventListener('click', increaseLikes)
 function init(){
   console.log('the dom has loaded');
 
-  makeRequest().then((json) => {
+  fetch(toyUrl)
+    .then((json) => {
     json.map(createToyTemplate)
   })
 
 }
 
-function makeRequest() {
-  return fetch(toyUrl, {
-
-  }, {method: "GET"})
-    .then(resp => resp.json())
-}
-
 function createToyTemplate(toy){
-  // toyCollection.innerHTML += `<h3>${json[0].name}`
-  toyCollection.innerHTML += `
+  toyCollection.innerHTML = `
     <div data-id="${toy.id}" class="card">
       <h2>${toy.name}</h2>
       <img src="${toy.image}" class="toy-avatar">
@@ -52,9 +41,6 @@ function createToyTemplate(toy){
 }
 
 function createToy(e){
-  // event listener is a submit - so we have to prevent default
-
-  e.preventDefault()
 
   let inputs = document.querySelectorAll('.input-text')
   let name = inputs[0].value
@@ -66,15 +52,6 @@ function createToy(e){
     likes: 0
   }
 
-
-  // optimistic rendering
-  // createToyTemplate(data)
-  // post the input values
-  // to the API
-
-  // fetch method: post
-  // get our two input values
-
   fetch(toyUrl, {
     method: "POST",
     body: JSON.stringify(data),
@@ -82,9 +59,7 @@ function createToy(e){
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-  }).then(res => res.json())
-    .then(createToyTemplate) // pessimistic rendering
-
+  }).then(createToyTemplate)
 }
 
 function increaseLikes(e){
@@ -103,13 +78,8 @@ function increaseLikes(e){
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
-    }).then(res => res.json()).then(console.log)
-    // console.log('clicked', e.target);
+    })
   }
-  // to get likes to increase
-  // need to know how many likes the toy already has
-  // send a patch request
-  // how much to increment
 
 }
 
